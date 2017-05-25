@@ -1,127 +1,60 @@
 import React, { Component } from 'react';
 import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col, Card, CardBlock, CardHeader, CardFooter } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
-
-const EndpointTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
-	<table className="table">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Path</th>
-				<th style={{width:'5%'}}></th>
-				<th style={{width:'5%'}}></th>
-			</tr>
-		</thead>
-		<tbody>
-			{rows.map((row,idx) => (
-				<tr key={idx}>
-					{row.colums.map((column,idx) => (<td>column.value</td>))}
-					<td><button type="button" className="btn btn-primary" onClick={onClickEdit.bind(null, row._id)}><i className="fa fa-edit"></i></button></td>
-					<td><button type="button" className="btn btn-danger" onClick={onClickDelete.bind(null, row._id)}><i className="fa fa-close"></i></button></td>
-				</tr>
-			))}
-		</tbody>
-	</table>
-);
-
-class CreateEndpoint extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
-
-  render() {
-	  return (
-		  <Row>
-			<Col md="12">
-				<Card>
-					<CardHeader>
-						<strong>Create</strong> an Endpoint
-					</CardHeader>
-					<CardBlock>
-						<Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-							<Row>
-								<Col md="1" />
-								<Col md="10">
-									<FormGroup>
-										<label className="form-control-label" htmlFor="text-input">Name</label>
-										<input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint"/>
-										<span className="help-block">Please enter a unique endpoint name</span>
-									</FormGroup>
-								</Col>
-								<Col md="1" />
-							</Row>
-							<Row>
-								<Col md="1" />
-								<Col md="10">
-									<Card>
-										<CardHeader>
-											<i className="fa fa-align-justify"></i> Properties
-										</CardHeader>
-										<CardBlock>
-											<Row>
-												<Col md="12" style={{textAlign: 'center'}}>
-													<FormGroup>
-														<label className="form-control-label" htmlFor="prop-name">Property Name</label>
-														<input type="text" id="prop-name" name="prop-name" className="form-control" placeholder="Name for the property"/>
-														<span className="help-block">Please enter a unique property name</span>
-													</FormGroup>
-												</Col>
-											</Row>
-											<Row>
-												<Col md="12" style={{textAlign: 'center'}}>
-													<FormGroup>
-														<label className="form-control-label" htmlFor="prop-type">Type</label>
-														<select className="form-control" id="prop-type">
-															<option>String</option>
-															<option>Integer</option>
-															<option>Decimal</option>
-															<option>Date</option>
-														</select>
-														<span className="help-block">Please enter a unique endpoint name</span>
-													</FormGroup>
-												</Col>
-											</Row>
-											<Row>
-												<Col md="12" style={{textAlign: 'center'}}>
-													<button type="button" className="btn btn-primary"><i className="fa fa-star"></i>&nbsp; Add</button>
-												</Col>
-											</Row>
-											<br/>
-											<EndpointTable />
-										</CardBlock>
-									</Card>
-								</Col>
-								<Col md="1" />
-							</Row>
-						</Form>
-					</CardBlock>
-					<CardFooter>
-						<button type="submit" className="btn btn-sm btn-primary"><i className="fa fa-dot-circle-o"></i> Submit</button>
-						<button type="reset" className="btn btn-sm btn-danger"><i className="fa fa-ban"></i> Reset</button>
-					</CardFooter>
-				</Card>
-			</Col>
-		</Row>
-	  );
-  }
-}
+import CreateEndpoint from './CreateEndpoint';
+import Api  from '../../../api';
+import EndpointTable from './EndpointTable';
 
 class Endpoints extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-		showCreateEndpoint: false
+		showCreateEndpoint: false,
+		endpoints: [],
+		currentEndpoint: null,
+		createEndpointAction: 'Create'
 	};
 	this.handleCreateNewEndpoint = this.handleCreateNewEndpoint.bind(this);
+	this.handleEditEndpoint = this.handleEditEndpoint.bind(this);
+	this.handleCreateEndpointSubmit = this.handleCreateEndpointSubmit.bind(this);
   }
 
-  handleCreateNewEndpoint(event) {
+  componentDidMount(){
+	this.getAllEndpoints();
+  }
+
+  getAllEndpoints(){
+	Api.getEndpoints().then(res => {
+		let rows = res.map(endpoint => ({
+			_id: endpoint._id,
+			name: endpoint.name,
+			properties: endpoint.properties,
+			columns: [endpoint.name, '/' + endpoint.name]
+		}) );
+		this.setState(() => ({endpoints: rows}))
+	});
+  }
+
+  handleCreateNewEndpoint() {
 	  this.setState((prevState) => ({
-		  showCreateEndpoint: !prevState.showCreateEndpoint
+		  	showCreateEndpoint: !prevState.showCreateEndpoint,
+		  	createEndpointAction: 'Create',
+			currentEndpoint: null
 	  }));
+  }
+
+  handleCreateEndpointSubmit(event) {
+	event.preventDefault();
+	alert('handleCreateEndpointSubmit');
+  }
+
+	handleEditEndpoint(id) {
+		this.setState((prevState) => ({
+			showCreateEndpoint: true,
+			createEndpointAction: 'Edit',
+			currentEndpoint: prevState.endpoints.filter(elm => elm._id === id)[0]
+		}));
   }
 
   render() {
@@ -134,7 +67,10 @@ class Endpoints extends Component {
                 <i className="fa fa-align-justify"></i> Availble Endpoints
               </CardHeader>
               <CardBlock>
-                <EndpointTable />
+                <EndpointTable 
+					headerColumns={['Name', 'Path']}
+					onClickEdit={this.handleEditEndpoint}
+					rows={this.state.endpoints} />
                 <Row>
 					<Col md="12" style={{textAlign: 'center'}}>
 						<Button type="button" onClick={this.handleCreateNewEndpoint} color="primary"><i className="fa fa-star"></i>&nbsp; {!this.state.showCreateEndpoint ? 'Create a new endpoint' : 'Cancel the creation of a new endpoint'}</Button>
@@ -144,7 +80,11 @@ class Endpoints extends Component {
             </Card>
           </Col>
         </Row>
-        {this.state.showCreateEndpoint && <CreateEndpoint />}
+        {this.state.showCreateEndpoint && 
+			<CreateEndpoint 
+				action={this.state.createEndpointAction}
+				endpoint={this.state.currentEndpoint}
+				handleSubmit={this.handleCreateEndpointSubmit} />}
       </div>
     )
   }
