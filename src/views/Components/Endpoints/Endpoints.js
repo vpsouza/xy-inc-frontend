@@ -1,12 +1,26 @@
 import React, { Component } from 'react';
 import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
+import Api  from '../../../api';
+
 
 class Endpoints extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+		endpoints: []
+	};
+
+	this.getAllEndpoints = this.getAllEndpoints.bind(this);
+  }
+
+  componentDidMount(){
+	this.getAllEndpoints();
+  }
+
+  getAllEndpoints(){
+	Api.getEndpoints().then(res => this.setState(() => ({endpoints: res})));
   }
 
   render() {
@@ -29,18 +43,14 @@ class Endpoints extends Component {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-						<td>customers</td>
-						<td>/customers</td>
-						<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-						<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-						</tr>
-						<tr>
-						<td>products</td>
-						<td>/products</td>
-						<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-						<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-						</tr>
+						{this.state.endpoints.map(endpoint => (
+							<tr key={endpoint._id}>
+								<td>{endpoint.name}</td>
+								<td>/{endpoint.name}</td>
+								<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
+								<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
+							</tr>	
+						))}
 					</tbody>
 				</table>
                 <div className="row">
