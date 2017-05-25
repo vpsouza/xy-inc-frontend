@@ -4,21 +4,100 @@ import { Form, FormGroup } from 'reactstrap';
 import EndpointTable from './EndpointTable';
 const _ = require('lodash');
 
-const CreateEndpoint = ({action, handleSubmit,endpoint}) => (
-    <Row>
+class CreateEndpoint extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+        actionProperty: 'Add',
+        endpoint: props.endpoint || {
+            name: '',
+            properties: []
+        },
+		currentProperty: {
+            _id: '',
+            name: '',
+            type: 'date'
+        }
+	};
+
+    this.handlePropertyInputChange = this.handlePropertyInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEditProperty = this.handleEditProperty.bind(this);
+    this.saveProperty = this.saveProperty.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps){
+    this.setState(() => ({
+        endpoint: nextProps.endpoint || {
+            name: '',
+            properties: []
+        },
+        currentProperty: {
+            _id: '',
+            name: '',
+            type: 'date'
+        }
+    }))
+  }
+
+  handlePropertyInputChange(event){
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState(() => ({
+        currentProperty: {
+            [name]: value
+         }
+    }));
+  }
+
+  handleSubmit(event){
+      event.preventDefault();
+      this.props.handleSubmit(this.state.newProperty);
+  }
+
+  handleEditProperty(id){
+    this.setState((prevState) => ({
+        currentProperty: prevState.endpoint.properties.filter(prop => prop._id === id)
+    }));
+  }
+
+  saveProperty(){
+    if(this.state.currentProperty._id){
+        this.setState((prevState) => ({
+            endpoint: {
+                properties: [prevState.currentProperty, ...prevState.endpoint.properties.filter(prop => prop.name !== prevState.currentProperty.name)],
+                name: prevState.endpoint.name
+            }
+        }));
+    } else {
+        this.setState((prevState) => ({
+            endpoint: {
+                properties: [prevState.currentProperty, ...prevState.endpoint.properties],
+                name: prevState.endpoint.name
+            }
+        }));
+    }
+  }
+
+  render() {
+    return (
+      <Row>
         <Col md="12">
             <Card>
                 <CardHeader>
-                    <strong>{action}</strong> an Endpoint
+                    <strong>{this.props.action}</strong> an Endpoint
                 </CardHeader>
                 <CardBlock>
-                    <Form className="form-horizontal" onSubmit={handleSubmit}>
+                    <Form className="form-horizontal" onSubmit={this.handleSubmit}>
                         <Row>
                             <Col md="1" />
                             <Col md="10">
                                 <FormGroup>
                                     <label className="form-control-label" htmlFor="text-input">Name</label>
-                                    <input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint" value={endpoint.name}/>
+                                    <input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint" value={this.state.endpoint.name}/>
                                     <span className="help-block">Please enter a unique endpoint name</span>
                                 </FormGroup>
                             </Col>
@@ -36,7 +115,7 @@ const CreateEndpoint = ({action, handleSubmit,endpoint}) => (
                                             <Col md="12" style={{textAlign: 'center'}}>
                                                 <FormGroup>
                                                     <label className="form-control-label" htmlFor="prop-name">Property Name</label>
-                                                    <input type="text" id="prop-name" name="prop-name" className="form-control" placeholder="Name for the property"/>
+                                                    <input type="text" id="prop-name" name="name" className="form-control" onChange={this.handlePropertyInputChange} placeholder="Name for the property" value={this.state.currentProperty.name}/>
                                                     <span className="help-block">Please enter a unique property name</span>
                                                 </FormGroup>
                                             </Col>
@@ -45,11 +124,11 @@ const CreateEndpoint = ({action, handleSubmit,endpoint}) => (
                                             <Col md="12" style={{textAlign: 'center'}}>
                                                 <FormGroup>
                                                     <label className="form-control-label" htmlFor="prop-type">Type</label>
-                                                    <select className="form-control" id="prop-type">
-                                                        <option>String</option>
-                                                        <option>Integer</option>
-                                                        <option>Decimal</option>
-                                                        <option>Date</option>
+                                                    <select className="form-control" id="prop-type" name="type" onChange={this.handlePropertyInputChange} value={this.state.currentProperty.type}>
+                                                        <option value='string'>String</option>
+                                                        <option value='integer'>Integer</option>
+                                                        <option value='decimal'>Decimal</option>
+                                                        <option value='date'>Date</option>
                                                     </select>
                                                     <span className="help-block">Please enter a unique endpoint name</span>
                                                 </FormGroup>
@@ -57,27 +136,30 @@ const CreateEndpoint = ({action, handleSubmit,endpoint}) => (
                                         </Row>
                                         <Row>
                                             <Col md="12" style={{textAlign: 'center'}}>
-                                                <button type="button" className="btn btn-primary"><i className="fa fa-star"></i>&nbsp; Add</button>
+                                                <Button onClick={this.saveProperty} color="primary"><i className="fa fa-star"></i>&nbsp; {this.state.actionProperty} Property</Button>
                                             </Col>
                                         </Row>
                                         <br/>
                                         <EndpointTable 
                                             headerColumns={['Name', 'Type']}
-                                            rows={endpoint.properties.map(prop => ({_id: prop._id, columns: [prop.name, prop.type]}))} />
+                                            onClickEdit={this.handleEditProperty}
+                                            rows={this.state.endpoint.properties.map(prop => ({_id: prop._id, columns: [prop.name, prop.type]}))} />
                                     </CardBlock>
+                                    <CardFooter>
+                                        <button disabled={!this.state.endpoint.name || this.state.endpoint.properties.length == 0 ? 'disabled' : ''} type="submit" className="btn btn-sm btn-primary"><i className="fa fa-dot-circle-o"></i> Save</button>&nbsp;
+                                        <button type="reset" className="btn btn-sm btn-danger"><i className="fa fa-ban"></i> Reset</button>
+                                    </CardFooter>
                                 </Card>
                             </Col>
                             <Col md="1" />
                         </Row>
                     </Form>
                 </CardBlock>
-                <CardFooter>
-                    <button type="submit" className="btn btn-sm btn-primary"><i className="fa fa-dot-circle-o"></i> Submit</button>&nbsp;
-                    <button type="reset" className="btn btn-sm btn-danger"><i className="fa fa-ban"></i> Reset</button>
-                </CardFooter>
             </Card>
         </Col>
     </Row>
-);
+    )
+  }
+}
 
 export default CreateEndpoint;

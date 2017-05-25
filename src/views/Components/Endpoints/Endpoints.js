@@ -12,7 +12,10 @@ class Endpoints extends Component {
     this.state = {
 		showCreateEndpoint: false,
 		endpoints: [],
-		currentEndpoint: null,
+		currentEndpoint: {
+			name: '',
+			properties: []
+		},
 		createEndpointAction: 'Create'
 	};
 	this.handleCreateNewEndpoint = this.handleCreateNewEndpoint.bind(this);
@@ -44,9 +47,8 @@ class Endpoints extends Component {
 	  }));
   }
 
-  handleCreateEndpointSubmit(event) {
-	event.preventDefault();
-	alert('handleCreateEndpointSubmit');
+  handleCreateEndpointSubmit(endpoint) {
+		alert('handleCreateEndpointSubmit');
   }
 
 	handleEditEndpoint(id) {
@@ -60,32 +62,32 @@ class Endpoints extends Component {
   render() {
     return (
       <div className="animated fadeIn">
-		<Row>
-          <Col lg="12">
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i> Availble Endpoints
-              </CardHeader>
-              <CardBlock>
-                <EndpointTable 
-					headerColumns={['Name', 'Path']}
-					onClickEdit={this.handleEditEndpoint}
-					rows={this.state.endpoints} />
-                <Row>
-					<Col md="12" style={{textAlign: 'center'}}>
-						<Button type="button" onClick={this.handleCreateNewEndpoint} color="primary"><i className="fa fa-star"></i>&nbsp; {!this.state.showCreateEndpoint ? 'Create a new endpoint' : 'Cancel the creation of a new endpoint'}</Button>
-					</Col>
-				</Row>
-              </CardBlock>
-            </Card>
-          </Col>
+				<Row>
+						<Col lg="12">
+								<Card>
+									<CardHeader>
+										<i className="fa fa-align-justify"></i> Availble Endpoints
+									</CardHeader>
+									<CardBlock>
+										<EndpointTable 
+											headerColumns={['Name', 'Path']}
+											onClickEdit={this.handleEditEndpoint}
+											rows={this.state.endpoints} />
+										<Row>
+											<Col md="12" style={{textAlign: 'center'}}>
+												<Button type="button" onClick={this.handleCreateNewEndpoint} color="primary"><i className="fa fa-star"></i>&nbsp; {!this.state.showCreateEndpoint ? 'Create a new endpoint' : 'Cancel the creation of a new endpoint'}</Button>
+											</Col>
+										</Row>
+              		</CardBlock>
+            		</Card>
+          	</Col>
         </Row>
         {this.state.showCreateEndpoint && 
-			<CreateEndpoint 
-				action={this.state.createEndpointAction}
-				endpoint={this.state.currentEndpoint}
-				handleSubmit={this.handleCreateEndpointSubmit} />}
-      </div>
+					<CreateEndpoint 
+						action={this.state.createEndpointAction}
+						endpoint={this.state.currentEndpoint}
+						handleSubmit={this.handleCreateEndpointSubmit} />}
+			</div>
     )
   }
 }
