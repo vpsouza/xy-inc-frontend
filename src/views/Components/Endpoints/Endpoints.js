@@ -1,8 +1,30 @@
 import React, { Component } from 'react';
-import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col, Card, CardBlock, CardHeader, CardFooter } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
 
-class Endpoints extends Component {
+const EndpointTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
+	<table className="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Path</th>
+				<th style={{width:'5%'}}></th>
+				<th style={{width:'5%'}}></th>
+			</tr>
+		</thead>
+		<tbody>
+			{rows.map((row,idx) => (
+				<tr key={idx}>
+					{row.colums.map((column,idx) => (<td>column.value</td>))}
+					<td><button type="button" className="btn btn-primary" onClick={onClickEdit.bind(null, row._id)}><i className="fa fa-edit"></i></button></td>
+					<td><button type="button" className="btn btn-danger" onClick={onClickDelete.bind(null, row._id)}><i className="fa fa-close"></i></button></td>
+				</tr>
+			))}
+		</tbody>
+	</table>
+);
+
+class CreateEndpoint extends Component {
   constructor(props) {
     super(props);
 
@@ -10,90 +32,46 @@ class Endpoints extends Component {
   }
 
   render() {
-    return (
-      <div className="animated fadeIn">
-		<div className="row">
-          <div className="col-lg-12">
-            <div className="card">
-              <div className="card-header">
-                <i className="fa fa-align-justify"></i> Availble Endpoints
-              </div>
-              <div className="card-block">
-                <table className="table">
-					<thead>
-						<tr>
-						<th>Name</th>
-						<th>Path</th>
-						<th style={{width:'5%'}}></th>
-						<th style={{width:'5%'}}></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-						<td>customers</td>
-						<td>/customers</td>
-						<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-						<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-						</tr>
-						<tr>
-						<td>products</td>
-						<td>/products</td>
-						<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-						<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-						</tr>
-					</tbody>
-				</table>
-                <div className="row">
-					<div className="col-md-12" style={{textAlign: 'center'}}>
-						<button type="button" className="btn btn-primary"><i className="fa fa-star"></i>&nbsp; Create a new endpoint</button>
-					</div>
-				</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-			<div className="col-md-12">
-				<div className="card">
-					<div className="card-header">
+	  return (
+		  <Row>
+			<Col md="12">
+				<Card>
+					<CardHeader>
 						<strong>Create</strong> an Endpoint
-					</div>
-					<div className="card-block">
+					</CardHeader>
+					<CardBlock>
 						<Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
-							<div className="row">
-								<div className="col-md-2" />
-								<div className="col-md-8">
-									<div className="form-group">
+							<Row>
+								<Col md="1" />
+								<Col md="10">
+									<FormGroup>
 										<label className="form-control-label" htmlFor="text-input">Name</label>
 										<input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint"/>
 										<span className="help-block">Please enter a unique endpoint name</span>
-									</div>
-								</div>
-								<div className="col-md-2" />
-							</div>
-							<div className="row">
-								<div className="col-md-2" />
-								<div className="col-md-8">
-									<div className="card">
-										<div className="card-header">
+									</FormGroup>
+								</Col>
+								<Col md="1" />
+							</Row>
+							<Row>
+								<Col md="1" />
+								<Col md="10">
+									<Card>
+										<CardHeader>
 											<i className="fa fa-align-justify"></i> Properties
-										</div>
-										<div className="card-block">
-											<div className="row">
-												<div className="col-md-2" />
-												<div className="col-md-8">
-													<div className="form-group">
+										</CardHeader>
+										<CardBlock>
+											<Row>
+												<Col md="12" style={{textAlign: 'center'}}>
+													<FormGroup>
 														<label className="form-control-label" htmlFor="prop-name">Property Name</label>
 														<input type="text" id="prop-name" name="prop-name" className="form-control" placeholder="Name for the property"/>
 														<span className="help-block">Please enter a unique property name</span>
-													</div>
-												</div>
-												<div className="col-md-2" />
-											</div>
-											<div className="row">
-												<div className="col-md-2" />
-												<div className="col-md-8">
-													<div className="form-group">
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col md="12" style={{textAlign: 'center'}}>
+													<FormGroup>
 														<label className="form-control-label" htmlFor="prop-type">Type</label>
 														<select className="form-control" id="prop-type">
 															<option>String</option>
@@ -102,66 +80,71 @@ class Endpoints extends Component {
 															<option>Date</option>
 														</select>
 														<span className="help-block">Please enter a unique endpoint name</span>
-													</div>
-												</div>
-												<div className="col-md-2" />
-											</div>
-											<div className="row">
-												<div className="col-md-12" style={{textAlign: 'center'}}>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col md="12" style={{textAlign: 'center'}}>
 													<button type="button" className="btn btn-primary"><i className="fa fa-star"></i>&nbsp; Add</button>
-												</div>
-											</div>
+												</Col>
+											</Row>
 											<br/>
-											<table className="table">
-											<thead>
-												<tr>
-												<th>Name</th>
-												<th>Type</th>
-												<th style={{width:'5%'}}></th>
-												<th style={{width:'5%'}}></th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-												<td>Name</td>
-												<td>String</td>
-												<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-												<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-												</tr>
-												<tr>
-												<td>Age</td>
-												<td>Integer</td>
-												<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-												<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-												</tr>
-												<tr>
-												<td>Weight</td>
-												<td>Decimal</td>
-												<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-												<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-												</tr>
-												<tr>
-												<td>Birth Date</td>
-												<td>date</td>
-												<th><button type="button" className="btn btn-primary"><i className="fa fa-edit"></i></button></th>
-												<th><button type="button" className="btn btn-danger"><i className="fa fa-close"></i></button></th>
-												</tr>
-											</tbody>
-											</table>
-										</div>
-										</div>
-								</div>
-								<div className="col-md-2" />
-							</div>
+											<EndpointTable />
+										</CardBlock>
+									</Card>
+								</Col>
+								<Col md="1" />
+							</Row>
 						</Form>
-					</div>
-					<div className="card-footer">
+					</CardBlock>
+					<CardFooter>
 						<button type="submit" className="btn btn-sm btn-primary"><i className="fa fa-dot-circle-o"></i> Submit</button>
 						<button type="reset" className="btn btn-sm btn-danger"><i className="fa fa-ban"></i> Reset</button>
-					</div>
-					</div>
-			</div>
-		</div>
+					</CardFooter>
+				</Card>
+			</Col>
+		</Row>
+	  );
+  }
+}
+
+class Endpoints extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+		showCreateEndpoint: false
+	};
+	this.handleCreateNewEndpoint = this.handleCreateNewEndpoint.bind(this);
+  }
+
+  handleCreateNewEndpoint(event) {
+	  this.setState((prevState) => ({
+		  showCreateEndpoint: !prevState.showCreateEndpoint
+	  }));
+  }
+
+  render() {
+    return (
+      <div className="animated fadeIn">
+		<Row>
+          <Col lg="12">
+            <Card>
+              <CardHeader>
+                <i className="fa fa-align-justify"></i> Availble Endpoints
+              </CardHeader>
+              <CardBlock>
+                <EndpointTable />
+                <Row>
+					<Col md="12" style={{textAlign: 'center'}}>
+						<Button type="button" onClick={this.handleCreateNewEndpoint} color="primary"><i className="fa fa-star"></i>&nbsp; {!this.state.showCreateEndpoint ? 'Create a new endpoint' : 'Cancel the creation of a new endpoint'}</Button>
+					</Col>
+				</Row>
+              </CardBlock>
+            </Card>
+          </Col>
+        </Row>
+        {this.state.showCreateEndpoint && <CreateEndpoint />}
       </div>
     )
   }
