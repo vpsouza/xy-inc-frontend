@@ -7,7 +7,7 @@ const EndpointTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
 	<table className="table">
 		<thead>
 			<tr>
-				{headerColumns.map(header => (<th>{header}</th>))}
+				{headerColumns.map(header => (<th key={header}>{header}</th>))}
 				<th style={{width:'5%'}}></th>
 				<th style={{width:'5%'}}></th>
 			</tr>
@@ -16,7 +16,7 @@ const EndpointTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
 			{
                 rows.map((row,idx) => (
                     <tr key={idx}>
-                        {row.columns.map((column,idx) => (<td>{column}</td>))}
+                        {row.columns.map((column,idx) => (<td key={idx}>{column}</td>))}
                         <td>{onClickEdit && <button type="button" className="btn btn-primary" onClick={onClickEdit.bind(null, row._id)}><i className="fa fa-edit"></i></button>}</td>
                         <td>{onClickDelete && <button type="button" className="btn btn-danger" onClick={onClickDelete.bind(null, row._id)}><i className="fa fa-close"></i></button>}</td>
                     </tr>

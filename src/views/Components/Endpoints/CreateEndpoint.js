@@ -21,10 +21,12 @@ class CreateEndpoint extends Component {
         }
 	};
 
-    this.handlePropertyInputChange = this.handlePropertyInputChange.bind(this);
+    this.handleCurrentPropertyInputChange = this.handleCurrentPropertyInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEditProperty = this.handleEditProperty.bind(this);
     this.saveProperty = this.saveProperty.bind(this);
+	this.handleEndpointNameChange = this.handleEndpointNameChange.bind(this);
+	this.resetProperty = this.resetProperty.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
@@ -41,7 +43,15 @@ class CreateEndpoint extends Component {
     }))
   }
 
-  handlePropertyInputChange(event){
+  handleEndpointNameChange(event) {
+	this.setState(() => ({
+		endpoint: {
+			name: event.target.value
+		}
+	}));
+  }
+
+  handleCurrentPropertyInputChange(event){
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
@@ -60,8 +70,20 @@ class CreateEndpoint extends Component {
 
   handleEditProperty(id){
     this.setState((prevState) => ({
-        currentProperty: prevState.endpoint.properties.filter(prop => prop._id === id)
+		actionProperty: 'Save',
+        currentProperty: prevState.endpoint.properties.filter(prop => prop._id === id)[0]
     }));
+  }
+
+  resetProperty() {
+	this.setState(() => ({
+		currentProperty: {
+            _id: '',
+            name: '',
+            type: 'date'
+        },
+		actionProperty: 'Add'
+	}))
   }
 
   saveProperty(){
@@ -97,7 +119,7 @@ class CreateEndpoint extends Component {
                             <Col md="10">
                                 <FormGroup>
                                     <label className="form-control-label" htmlFor="text-input">Name</label>
-                                    <input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint" value={this.state.endpoint.name}/>
+                                    <input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint" value={this.state.endpoint.name} onChange={this.handleEndpointNameChange}/>
                                     <span className="help-block">Please enter a unique endpoint name</span>
                                 </FormGroup>
                             </Col>
@@ -115,7 +137,7 @@ class CreateEndpoint extends Component {
                                             <Col md="12" style={{textAlign: 'center'}}>
                                                 <FormGroup>
                                                     <label className="form-control-label" htmlFor="prop-name">Property Name</label>
-                                                    <input type="text" id="prop-name" name="name" className="form-control" onChange={this.handlePropertyInputChange} placeholder="Name for the property" value={this.state.currentProperty.name}/>
+                                                    <input type="text" id="prop-name" name="name" className="form-control" onChange={this.handleCurrentPropertyInputChange} placeholder="Name for the property" value={this.state.currentProperty.name}/>
                                                     <span className="help-block">Please enter a unique property name</span>
                                                 </FormGroup>
                                             </Col>
@@ -124,9 +146,9 @@ class CreateEndpoint extends Component {
                                             <Col md="12" style={{textAlign: 'center'}}>
                                                 <FormGroup>
                                                     <label className="form-control-label" htmlFor="prop-type">Type</label>
-                                                    <select className="form-control" id="prop-type" name="type" onChange={this.handlePropertyInputChange} value={this.state.currentProperty.type}>
+                                                    <select className="form-control" id="prop-type" name="type" onChange={this.handleCurrentPropertyInputChange} value={this.state.currentProperty.type}>
                                                         <option value='string'>String</option>
-                                                        <option value='integer'>Integer</option>
+                                                        <option value='int'>Integer</option>
                                                         <option value='decimal'>Decimal</option>
                                                         <option value='date'>Date</option>
                                                     </select>
@@ -137,6 +159,7 @@ class CreateEndpoint extends Component {
                                         <Row>
                                             <Col md="12" style={{textAlign: 'center'}}>
                                                 <Button onClick={this.saveProperty} color="primary"><i className="fa fa-star"></i>&nbsp; {this.state.actionProperty} Property</Button>
+												<Button onClick={this.resetProperty} color="primary"><i className="fa fa-star"></i>&nbsp; Reset Property</Button>
                                             </Col>
                                         </Row>
                                         <br/>
