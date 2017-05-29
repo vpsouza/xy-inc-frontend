@@ -24,9 +24,10 @@ class CreateEndpoint extends Component {
     this.handleCurrentPropertyInputChange = this.handleCurrentPropertyInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEditProperty = this.handleEditProperty.bind(this);
+	this.handleDeleteProperty = this.handleDeleteProperty.bind(this);
     this.saveProperty = this.saveProperty.bind(this);
 	this.handleEndpointNameChange = this.handleEndpointNameChange.bind(this);
-	this.resetProperty = this.resetProperty.bind(this);
+	this.resetPropertyInput = this.resetPropertyInput.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
@@ -56,11 +57,11 @@ class CreateEndpoint extends Component {
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
-    this.setState(() => ({
-        currentProperty: {
-            [name]: value
-         }
-    }));
+    this.setState((prevState) => {
+		let currProp = prevState.currentProperty;
+		currProp[name] = value;
+		return { currentProperty: currProp};
+    });
   }
 
   handleSubmit(event){
@@ -75,7 +76,15 @@ class CreateEndpoint extends Component {
     }));
   }
 
-  resetProperty() {
+  handleDeleteProperty(propToDelete){
+    this.setState((prevState) => {
+		let newEndpoint = prevState.endpoint;
+		newEndpoint.properties = newEndpoint.properties.filter(prop => prop.name !== propToDelete.columns[0]);
+		return { endpoint: newEndpoint};
+    });
+  }
+
+  resetPropertyInput() {
 	this.setState(() => ({
 		currentProperty: {
             _id: '',
@@ -87,21 +96,12 @@ class CreateEndpoint extends Component {
   }
 
   saveProperty(){
-    if(this.state.currentProperty._id){
-        this.setState((prevState) => ({
-            endpoint: {
-                properties: [prevState.currentProperty, ...prevState.endpoint.properties.filter(prop => prop.name !== prevState.currentProperty.name)],
-                name: prevState.endpoint.name
-            }
-        }));
-    } else {
-        this.setState((prevState) => ({
-            endpoint: {
-                properties: [prevState.currentProperty, ...prevState.endpoint.properties],
-                name: prevState.endpoint.name
-            }
-        }));
-    }
+	  this.setState(prevState => {
+		  let prevStateEndpoint = prevState.endpoint;
+		  prevStateEndpoint.properties = [prevState.currentProperty, ...prevStateEndpoint.properties.filter(prop => prop.name !== prevState.currentProperty.name)];
+		  return { endpoint: prevStateEndpoint};
+	  });
+	this.resetPropertyInput();
   }
 
   render() {
@@ -158,14 +158,16 @@ class CreateEndpoint extends Component {
                                         </Row>
                                         <Row>
                                             <Col md="12" style={{textAlign: 'center'}}>
-                                                <Button onClick={this.saveProperty} color="primary"><i className="fa fa-star"></i>&nbsp; {this.state.actionProperty} Property</Button>
-												<Button onClick={this.resetProperty} color="primary"><i className="fa fa-star"></i>&nbsp; Reset Property</Button>
+                                                <Button onClick={this.saveProperty} color="primary"><i className="fa fa-star"></i>&nbsp; {this.state.actionProperty}</Button>
+												&nbsp;
+												<Button onClick={this.resetPropertyInput} color="danger"><i className="fa fa-ban"></i>&nbsp; Reset</Button>
                                             </Col>
                                         </Row>
                                         <br/>
                                         <EndpointTable 
                                             headerColumns={['Name', 'Type']}
                                             onClickEdit={this.handleEditProperty}
+											onClickDelete={this.handleDeleteProperty}
                                             rows={this.state.endpoint.properties.map(prop => ({_id: prop._id, columns: [prop.name, prop.type]}))} />
                                     </CardBlock>
                                     <CardFooter>
