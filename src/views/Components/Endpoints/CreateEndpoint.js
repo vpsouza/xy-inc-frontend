@@ -45,11 +45,15 @@ class CreateEndpoint extends Component {
   }
 
   handleEndpointNameChange(event) {
-	this.setState(() => ({
-		endpoint: {
-			name: event.target.value
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    
+	this.setState(prevState => {
+		    let newEndpoint = prevState.endpoint;
+            newEndpoint['name'] = value;
+            return {endpoint: newEndpoint};
 		}
-	}));
+	);
   }
 
   handleCurrentPropertyInputChange(event){
@@ -66,7 +70,12 @@ class CreateEndpoint extends Component {
 
   handleSubmit(event){
       event.preventDefault();
-      this.props.handleSubmit(this.state.newProperty);
+      this.props.handleSubmit(this.state.endpoint);
+  }
+
+  handleReset(event){
+      event.preventDefault();
+      this.props.handleReset(this.state.endpoint)
   }
 
   handleEditProperty(id){
@@ -113,13 +122,13 @@ class CreateEndpoint extends Component {
                     <strong>{this.props.action}</strong> an Endpoint
                 </CardHeader>
                 <CardBlock>
-                    <Form className="form-horizontal" onSubmit={this.handleSubmit}>
+                    <Form  className="form-horizontal">
                         <Row>
                             <Col md="1" />
                             <Col md="10">
                                 <FormGroup>
-                                    <label className="form-control-label" htmlFor="text-input">Name</label>
-                                    <input type="text" id="text-input" name="text-input" className="form-control" placeholder="Name for the endpoint" value={this.state.endpoint.name} onChange={this.handleEndpointNameChange}/>
+                                    <label className="form-control-label" htmlFor="endpointName">Name</label>
+                                    <input type="text" id="endpointName" name="endpointName" className="form-control" placeholder="Name for the endpoint" value={this.state.endpoint.name} onChange={this.handleEndpointNameChange}/>
                                     <span className="help-block">Please enter a unique endpoint name</span>
                                 </FormGroup>
                             </Col>
@@ -171,8 +180,8 @@ class CreateEndpoint extends Component {
                                             rows={this.state.endpoint.properties.map(prop => ({_id: prop._id, columns: [prop.name, prop.type]}))} />
                                     </CardBlock>
                                     <CardFooter>
-                                        <button disabled={!this.state.endpoint.name || this.state.endpoint.properties.length == 0 ? 'disabled' : ''} type="submit" className="btn btn-sm btn-primary"><i className="fa fa-dot-circle-o"></i> Save</button>&nbsp;
-                                        <button type="reset" className="btn btn-sm btn-danger"><i className="fa fa-ban"></i> Reset</button>
+                                        <Button onClick={this.handleSubmit} disabled={!this.state.endpoint.name || this.state.endpoint.properties.length == 0} type="submit" color="primary"><i className="fa fa-dot-circle-o"></i> Save</Button>&nbsp;
+                                        <Button onClick={this.handleReset} type="reset" color="danger"><i className="fa fa-ban"></i> Reset</Button>
                                     </CardFooter>
                                 </Card>
                             </Col>
