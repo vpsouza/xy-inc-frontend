@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col, Card, CardBlock, CardHeader, CardFooter } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
-import CustomTable from '../../components/CustomTable/CustomTable';
+import CustomTable from '../../components/CustomTable/';
 const _ = require('lodash');
 
 class CreateEndpoint extends Component {
@@ -74,6 +74,7 @@ class CreateEndpoint extends Component {
 
   handleReset(event){
       event.preventDefault();
+	  this.resetPropertyInput();
       this.props.handleReset(this.state.endpoint);
   }
 
@@ -165,7 +166,7 @@ class CreateEndpoint extends Component {
                                         </Row>
                                         <Row>
                                             <Col md="12" style={{textAlign: 'center'}}>
-                                                <Button onClick={this.saveProperty} color="primary"><i className="fa fa-star"></i>&nbsp; {this.state.actionProperty}</Button>
+                                                <Button disabled={!this.state.currentProperty.name || !this.state.currentProperty.type} onClick={this.saveProperty} color="primary"><i className="fa fa-star"></i>&nbsp; {this.state.actionProperty}</Button>
 												&nbsp;
 												<Button onClick={this.resetPropertyInput} color="danger"><i className="fa fa-ban"></i>&nbsp; Reset</Button>
                                             </Col>

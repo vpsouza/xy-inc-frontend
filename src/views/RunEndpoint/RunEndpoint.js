@@ -5,8 +5,8 @@ import {
 		Col
 } from 'reactstrap';
 import Api from '../../api';
-import EndpointList from '../../components/EndpointList/EndpointList';
-import AlertNotification from '../../components/AlertNotification/AlertNotification';
+import EndpointList from '../../components/EndpointList/';
+import AlertNotification from '../../components/AlertNotification/';
 import ExecuteEndpoint from './ExecuteEndpoint';
 
 class RunEndpoint extends Component {

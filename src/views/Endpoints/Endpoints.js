@@ -6,8 +6,8 @@ import {
 } from 'reactstrap';
 import CreateEndpoint from './CreateEndpoint';
 import Api from '../../api';
-import EndpointList from '../../components/EndpointList/EndpointList';
-import AlertNotification from '../../components/AlertNotification/AlertNotification';
+import EndpointList from '../../components/EndpointList/';
+import AlertNotification from '../../components/AlertNotification/';
 
 class Endpoints extends Component {
 	constructor(props) {
