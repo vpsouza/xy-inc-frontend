@@ -25,7 +25,7 @@ const EndpointList = ({endpoints, hasError, handleEditEndpoint, handleDeleteEndp
                     Availble Endpoints
                 </CardHeader>
                 <CardBlock>
-                    {endpoints.length > 0 && !hasError ? 
+                    {endpoints.length > 0 ? 
                         <div>
                             <CustomTable
                                 headerColumns={['Name', 'Path']}
@@ -42,7 +42,7 @@ const EndpointList = ({endpoints, hasError, handleEditEndpoint, handleDeleteEndp
                                 </Col>
                             </Row>
                         </div>
-                        :
+                        : !hasError && 
                         <Loading />
                     }
                 </CardBlock>

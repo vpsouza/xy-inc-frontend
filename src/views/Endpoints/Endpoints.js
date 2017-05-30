@@ -15,6 +15,7 @@ class Endpoints extends Component {
 
 		this.state = {
 			hasError: false,
+			fatalError: false,
 			errorMessage: '',
 			showCreateEndpoint: false,
 			endpoints: [],
@@ -60,7 +61,7 @@ class Endpoints extends Component {
 				this.setState(() => ({endpoints: rows}))
 			})
 			.catch(res => {
-				this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+				this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response ? res.response.data.message : res.message, fatalError: !res.response ? true : false}));
 			}); 
 	}
 
@@ -79,7 +80,7 @@ class Endpoints extends Component {
 			this.getAllEndpoints();
 		})
 		.catch(res => {
-			this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+			this.setState((prevState) => ({hasError: true, errorMessage: res.response ? res.response.data.message : res.message}));
 		}); 
 	}
 
@@ -102,7 +103,7 @@ class Endpoints extends Component {
 			}));
 			this.getAllEndpoints();
 		}).catch(res => {
-			this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+			this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response ? res.response.data.message : res.message}));
 		}); 
 	}
 
@@ -113,7 +114,7 @@ class Endpoints extends Component {
 	render() {
 		return (
 			<div className="animated fadeIn">
-				{this.state.hasError && (<Row><Col md="12"><AlertNotification isVisible={this.state.hasError} mainText={this.state.errorMessage} color="danger" handleClosed={this.handleAlertNotificationClosed} /></Col></Row>)}
+				{this.state.hasError && (<Row><Col md="12"><AlertNotification isVisible={this.state.hasError} mainText={this.state.errorMessage} color="danger" handleClosed={!this.state.fatalError ? this.handleAlertNotificationClosed : null} /></Col></Row>)}
 				<EndpointList 
 					handleEditEndpoint={this.handleEditEndpoint}
 					handleDeleteEndpoint={this.handleDeleteEndpoint}
@@ -125,7 +126,7 @@ class Endpoints extends Component {
 							: 'Cancel the creation of a new endpoint'}
 					</Button>
 				</EndpointList>
-				{this.state.showCreateEndpoint && 
+				{!this.state.hasError && this.state.showCreateEndpoint && 
 					<CreateEndpoint
 						action={this.state.createEndpointAction}
 						endpoint={this.state.currentEndpoint}

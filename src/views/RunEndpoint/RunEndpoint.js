@@ -15,6 +15,7 @@ class RunEndpoint extends Component {
 
 		this.state = {
 			hasError: false,
+			fatalError: false,
 			errorMessage: '',
 			showRunEndpoint: false,
 			endpoints: [],
@@ -50,7 +51,7 @@ class RunEndpoint extends Component {
 				this.setState(() => ({endpoints: rows}))
 			})
 			.catch(res => {
-				this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+				this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response ? res.response.data.message : res.message, fatalError: !res.response ? true : false}));
 			}); 
 	}
 
@@ -71,7 +72,7 @@ class RunEndpoint extends Component {
     render() {
         return (
             <div className="animated fadeIn">
-				{this.state.hasError && (<Row><Col md="12"><AlertNotification isVisible={this.state.hasError} mainText={this.state.errorMessage} color="danger" handleClosed={this.handleAlertNotificationClosed} /></Col></Row>)}
+				{this.state.hasError && (<Row><Col md="12"><AlertNotification isVisible={this.state.hasError} mainText={this.state.errorMessage} color="danger" handleClosed={!this.state.fatalError ? this.handleAlertNotificationClosed : null} /></Col></Row>)}
 				<EndpointList 
 					handleEditEndpoint={this.handleEditEndpoint}
 					hasError={this.state.hasError}
