@@ -15,8 +15,9 @@ import {
 import {Form, FormGroup} from 'reactstrap';
 import CreateEndpoint from './CreateEndpoint';
 import Api from '../../../api';
-import EndpointTable from './EndpointTable';
+import EndpointTable from '../../../components/EndpointTable/EndpointTable';
 import AlertNotification from '../AlertNotification/AlertNotification'
+import Loading from '../../../components/Loading/Loading';
 
 class Endpoints extends Component {
 	constructor(props) {
@@ -129,11 +130,13 @@ class Endpoints extends Component {
 								Availble Endpoints
 							</CardHeader>
 							<CardBlock>
-								<EndpointTable
-									headerColumns={['Name', 'Path']}
-									onClickEdit={this.handleEditEndpoint}
-									onClickDelete={this.handleDeleteEndpoint}
-									rows={this.state.endpoints}/>
+								{!this.state.endpoints ? <Loading /> : 
+									<EndpointTable
+										headerColumns={['Name', 'Path']}
+										onClickEdit={this.handleEditEndpoint}
+										onClickDelete={this.handleDeleteEndpoint}
+										rows={this.state.endpoints}/>}
+								
 								<Row>
 									<Col
 										md="12"

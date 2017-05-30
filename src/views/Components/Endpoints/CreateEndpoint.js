@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col, Card, CardBlock, CardHeader, CardFooter } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
-import EndpointTable from './EndpointTable';
+import EndpointTable from '../../../components/EndpointTable/EndpointTable';
 const _ = require('lodash');
 
 class CreateEndpoint extends Component {
