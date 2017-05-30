@@ -1,9 +1,12 @@
 import axios from 'axios';
 
-//const baseURL = 'http://localhost:3001' //https://xy-inc-node.herokuapp.com';
+//const baseURL = 'http://localhost:3001';
 const baseURL = 'https://xy-inc-node.herokuapp.com';
 
 export default class Api {
+	static getBaseEndpointURL() {
+		return baseURL;
+	}
 	static getEndpoints(){
 		return axios.get(baseURL + '/endpoints').then((response) => Promise.resolve(response.data));
 	}

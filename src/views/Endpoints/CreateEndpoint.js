@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col, Card, CardBlock, CardHeader, CardFooter } from 'reactstrap';
 import { Form, FormGroup } from 'reactstrap';
-import EndpointTable from '../../../components/EndpointTable/EndpointTable';
+import CustomTable from '../../components/CustomTable/CustomTable';
 const _ = require('lodash');
 
 class CreateEndpoint extends Component {
@@ -171,7 +171,7 @@ class CreateEndpoint extends Component {
                                             </Col>
                                         </Row>
                                         <br/>
-                                        <EndpointTable 
+                                        <CustomTable 
                                             headerColumns={['Name', 'Type']}
                                             onClickEdit={this.handleEditProperty}
 											onClickDelete={this.handleDeleteProperty}
