@@ -16,15 +16,18 @@
     "reactstrap": "4.5.0"
   },
   "devDependencies": {
-    "react-scripts": "1.0.6",
+    "firebase-tools": "^3.9.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
-    "gulp-sass": "^2.3.2"
+    "gulp-sass": "^2.3.2",
+    "react-scripts": "1.0.6"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+	"deploy": "npm run build && firebase deploy",
+	"firebase-init": "firebase login && firebase init"
   }
 }

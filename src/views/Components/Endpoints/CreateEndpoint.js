@@ -15,7 +15,6 @@ class CreateEndpoint extends Component {
             properties: []
         },
 		currentProperty: {
-            _id: '',
             name: '',
             type: 'date'
         }
@@ -23,6 +22,7 @@ class CreateEndpoint extends Component {
 
     this.handleCurrentPropertyInputChange = this.handleCurrentPropertyInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+	this.handleReset = this.handleReset.bind(this);
     this.handleEditProperty = this.handleEditProperty.bind(this);
 	this.handleDeleteProperty = this.handleDeleteProperty.bind(this);
     this.saveProperty = this.saveProperty.bind(this);
@@ -37,7 +37,6 @@ class CreateEndpoint extends Component {
             properties: []
         },
         currentProperty: {
-            _id: '',
             name: '',
             type: 'date'
         }
@@ -75,7 +74,7 @@ class CreateEndpoint extends Component {
 
   handleReset(event){
       event.preventDefault();
-      this.props.handleReset(this.state.endpoint)
+      this.props.handleReset(this.state.endpoint);
   }
 
   handleEditProperty(id){
@@ -96,7 +95,6 @@ class CreateEndpoint extends Component {
   resetPropertyInput() {
 	this.setState(() => ({
 		currentProperty: {
-            _id: '',
             name: '',
             type: 'date'
         },
@@ -180,7 +178,7 @@ class CreateEndpoint extends Component {
                                             rows={this.state.endpoint.properties.map(prop => ({_id: prop._id, columns: [prop.name, prop.type]}))} />
                                     </CardBlock>
                                     <CardFooter>
-                                        <Button onClick={this.handleSubmit} disabled={!this.state.endpoint.name || this.state.endpoint.properties.length == 0} type="submit" color="primary"><i className="fa fa-dot-circle-o"></i> Save</Button>&nbsp;
+                                        <Button onClick={this.handleSubmit} disabled={!this.state.endpoint.name || this.state.endpoint.properties.length == 0} color="primary"><i className="fa fa-dot-circle-o"></i> Save</Button>&nbsp;
                                         <Button onClick={this.handleReset} type="reset" color="danger"><i className="fa fa-ban"></i> Reset</Button>
                                     </CardFooter>
                                 </Card>

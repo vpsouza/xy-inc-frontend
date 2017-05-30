@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:3001' //https://xy-inc-node.herokuapp.com';
+//const baseURL = 'http://localhost:3001' //https://xy-inc-node.herokuapp.com';
+const baseURL = 'https://xy-inc-node.herokuapp.com';
 
 export default class Api {
 	static getEndpoints(){
@@ -12,6 +13,10 @@ export default class Api {
 	}
 
 	static updateEndpoint(endpoint){
-		return axios.post(baseURL + '/endpoints/' + endpoint._id.toString(), endpoint).then((response) => Promise.resolve(response.data));
+		return axios.put(baseURL + '/endpoints/' + endpoint._id.toString(), endpoint).then((response) => Promise.resolve(response.data));
+	}
+
+	static deleteEndpoint(id) {
+		return axios.delete(baseURL + '/endpoints/' + id).then((response) => Promise.resolve(response.data));
 	}
 };

@@ -16,19 +16,22 @@ import {Form, FormGroup} from 'reactstrap';
 import CreateEndpoint from './CreateEndpoint';
 import Api from '../../../api';
 import EndpointTable from './EndpointTable';
+import AlertNotification from '../AlertNotification/AlertNotification'
 
 class Endpoints extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-				showCreateEndpoint: false,
-				endpoints: [],
-				currentEndpoint: {
-						name: '',
-						properties: []
-				},
-				createEndpointAction: 'Create'
+			hasError: false,
+			errorMessage: '',
+			showCreateEndpoint: false,
+			endpoints: [],
+			currentEndpoint: {
+					name: '',
+					properties: []
+			},
+			createEndpointAction: 'Create'
 		};
 		this.handleCreateNewEndpoint = this
 			.handleCreateNewEndpoint
@@ -36,11 +39,14 @@ class Endpoints extends Component {
 		this.handleEditEndpoint = this
 			.handleEditEndpoint
 			.bind(this);
+		this.handleDeleteEndpoint = this
+			.handleDeleteEndpoint
+			.bind(this);			
 		this.handleCreateEndpointSubmit = this
 			.handleCreateEndpointSubmit
 			.bind(this);
-		this.handleCreateEndpointReset = this
-			.handleCreateEndpointReset
+		this.handleAlertNotificationClosed = this
+			.handleAlertNotificationClosed
 			.bind(this);
 	}
 
@@ -61,7 +67,8 @@ class Endpoints extends Component {
 					]
 				}));
 				this.setState(() => ({endpoints: rows}))
-			});
+			})
+			.catch(err => this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: err})));
 	}
 
 	handleCreateNewEndpoint() {
@@ -75,12 +82,12 @@ class Endpoints extends Component {
 	handleCreateEndpointSubmit(endpoint) {
 		let service = endpoint._id ? Api.updateEndpoint : Api.saveEndpoint;
 		service(endpoint).then(newEndpoint => {
+			this.handleCreateNewEndpoint();
 			this.getAllEndpoints();
-		});
-	}
-
-	handleCreateEndpointReset(endpoint) {
-		alert('handleCreateEndpointReset');
+		})
+		.catch(res => {
+			this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+		}); 
 	}
 
 	handleEditEndpoint(id) {
@@ -93,9 +100,27 @@ class Endpoints extends Component {
 		}));
 	}
 
+	handleDeleteEndpoint(endpoint) {
+		Api.deleteEndpoint(endpoint._id.toString()).then(res => {
+			this.setState((prevState) => ({
+				showCreateEndpoint: false,
+				createEndpointAction: 'Create',
+				currentEndpoint: null
+			}));
+			this.getAllEndpoints();
+		}).catch(res => {
+			this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+		}); 
+	}
+
+	handleAlertNotificationClosed() {
+		this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: ''}));
+	}
+
 	render() {
 		return (
 			<div className="animated fadeIn">
+				{this.state.hasError && (<Row><Col md="12"><AlertNotification isVisible={this.state.hasError} mainText={this.state.errorMessage} color="danger" handleClosed={this.handleAlertNotificationClosed} /></Col></Row>)}
 				<Row>
 					<Col lg="12">
 						<Card>
@@ -107,6 +132,7 @@ class Endpoints extends Component {
 								<EndpointTable
 									headerColumns={['Name', 'Path']}
 									onClickEdit={this.handleEditEndpoint}
+									onClickDelete={this.handleDeleteEndpoint}
 									rows={this.state.endpoints}/>
 								<Row>
 									<Col
@@ -129,7 +155,7 @@ class Endpoints extends Component {
 						action={this.state.createEndpointAction}
 						endpoint={this.state.currentEndpoint}
 						handleSubmit={this.handleCreateEndpointSubmit}
-						handleReset={this.handleCreateEndpointReset}/>}
+						handleReset={this.handleCreateNewEndpoint}/>}
 			</div>
 		)
 	}
