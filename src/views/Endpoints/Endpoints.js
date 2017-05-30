@@ -1,22 +1,13 @@
 import React, {Component} from 'react';
 import {
 		Button,
-		ButtonDropdown,
-		DropdownToggle,
-		DropdownMenu,
-		DropdownItem,
 		Row,
-		Col,
-		Card,
-		CardBlock,
-		CardHeader,
-		CardFooter
+		Col
 } from 'reactstrap';
-import {Form, FormGroup} from 'reactstrap';
 import CreateEndpoint from './CreateEndpoint';
-import Api from '../../../api';
-import EndpointTable from './EndpointTable';
-import AlertNotification from '../AlertNotification/AlertNotification'
+import Api from '../../api';
+import EndpointList from '../../components/EndpointList/EndpointList';
+import AlertNotification from '../../components/AlertNotification/AlertNotification';
 
 class Endpoints extends Component {
 	constructor(props) {
@@ -63,12 +54,14 @@ class Endpoints extends Component {
 					name: endpoint.name,
 					properties: endpoint.properties,
 					columns: [
-						endpoint.name, '/' + endpoint.name
+						endpoint.name, <a target="balnk" href={Api.getBaseEndpointURL() + '/api/' + endpoint.name}>{'/' + endpoint.name}</a>
 					]
 				}));
 				this.setState(() => ({endpoints: rows}))
 			})
-			.catch(err => this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: err})));
+			.catch(res => {
+				this.setState((prevState) => ({hasError: !prevState.hasError, errorMessage: res.response.data.message}));
+			}); 
 	}
 
 	handleCreateNewEndpoint() {
@@ -121,35 +114,17 @@ class Endpoints extends Component {
 		return (
 			<div className="animated fadeIn">
 				{this.state.hasError && (<Row><Col md="12"><AlertNotification isVisible={this.state.hasError} mainText={this.state.errorMessage} color="danger" handleClosed={this.handleAlertNotificationClosed} /></Col></Row>)}
-				<Row>
-					<Col lg="12">
-						<Card>
-							<CardHeader>
-								<i className="fa fa-align-justify"></i>
-								Availble Endpoints
-							</CardHeader>
-							<CardBlock>
-								<EndpointTable
-									headerColumns={['Name', 'Path']}
-									onClickEdit={this.handleEditEndpoint}
-									onClickDelete={this.handleDeleteEndpoint}
-									rows={this.state.endpoints}/>
-								<Row>
-									<Col
-										md="12"
-										style={{
-										textAlign: 'center'
-									}}>
-										<Button type="button" onClick={this.handleCreateNewEndpoint} color="primary">
-											<i className="fa fa-star"></i>&nbsp; {!this.state.showCreateEndpoint
-												? 'Create a new endpoint'
-												: 'Cancel the creation of a new endpoint'}</Button>
-									</Col>
-								</Row>
-							</CardBlock>
-						</Card>
-					</Col>
-				</Row>
+				<EndpointList 
+					handleEditEndpoint={this.handleEditEndpoint}
+					handleDeleteEndpoint={this.handleDeleteEndpoint}
+					hasError={this.state.hasError}
+					endpoints={this.state.endpoints}>
+					<Button type="button" onClick={this.handleCreateNewEndpoint} color="primary">
+						<i className="fa fa-star"></i>&nbsp; {!this.state.showCreateEndpoint
+							? 'Create a new endpoint'
+							: 'Cancel the creation of a new endpoint'}
+					</Button>
+				</EndpointList>
 				{this.state.showCreateEndpoint && 
 					<CreateEndpoint
 						action={this.state.createEndpointAction}

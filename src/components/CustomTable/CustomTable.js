@@ -15,7 +15,7 @@ import {
 import {Form, FormGroup} from 'reactstrap';
 import PropTypes from 'prop-types';
 
-const EndpointTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
+const CustomTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
     <table className="table">
         <thead>
             <tr>
@@ -57,11 +57,11 @@ const EndpointTable = ({headerColumns, onClickEdit, onClickDelete, rows}) => (
     </table>
 );
 
-EndpointTable.propTypes = {
+CustomTable.propTypes = {
     headerColumns: PropTypes.array.isRequired,
     onClickEdit: PropTypes.func,
     onClickDelete: PropTypes.func,
     rows: PropTypes.array.isRequired
 }
 
-export default EndpointTable;
+export default CustomTable;
