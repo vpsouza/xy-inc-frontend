@@ -1,4 +1,4 @@
-#XY-Inc ReactJS Frontend App
+# XY-Inc ReactJS Frontend App
 
 A simple and useful frontend application maded by ReactJS to make CRUD operations at the XY-Inc Backend as a Service.
 
