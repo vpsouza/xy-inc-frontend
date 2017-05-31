@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "axios": "^0.16.1",
     "chart.js": "2.5.0",
     "react": "^15.5.4",
     "react-addons-css-transition-group": "15.5.2",
@@ -15,15 +16,20 @@
     "reactstrap": "4.5.0"
   },
   "devDependencies": {
-    "react-scripts": "1.0.6",
-	"gulp": "^3.9.1",
+    "enzyme": "^2.8.2",
+    "firebase-tools": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
-    "gulp-sass": "^2.3.2"
+    "gulp-sass": "^2.3.2",
+    "react-scripts": "1.0.6",
+    "react-test-renderer": "^15.5.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && firebase deploy",
+    "firebase-init": "firebase login && firebase init"
   }
 }

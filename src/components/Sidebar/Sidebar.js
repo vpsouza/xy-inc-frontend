@@ -25,8 +25,11 @@ class Sidebar extends Component {
             <li className="nav-title">
               Menu
             </li>
-			<li className="nav-item">
+			      <li className="nav-item">
               <Link to={'/endpoints'} className="nav-link" activeClassName="active"><i className="icon-puzzle"></i> Endpoints</Link>
+            </li>
+            <li className="nav-item">
+              <Link to={'/run'} className="nav-link" activeClassName="active"><i className="icon-puzzle"></i> Run Endpoint <span className="badge badge-info">SOON</span></Link>
             </li>
           </ul>
         </nav>
